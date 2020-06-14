@@ -1,5 +1,5 @@
 # Zebra
-A schedule launcher to get the XML data files from Japan Meteorological Agency.
+A schedule launcher to get the XML files from Japan Meteorological Agency.
 
 ## Overview
 It's a Web application to get the XML files from JMA([Japan Meteorological Agency](https://www.jma.go.jp/jma/indexe.html)) by its [Atom feeds](http://xml.kishou.go.jp/xmlpull.html).
@@ -22,10 +22,10 @@ $ cd PathToThisREADME.md
 $ cd source/webapp
 $ mvn jetty:run
 ```
-you can get the xml files to the directory below.
+the xml files to the directory below.
 ```sh
 ./var/www/html/zebra/
 ```
 
 ## License
-Zebra is released under version 2.0 of the [Apache License](https://www.apache.org/licenses/LICENSE-2.0).
+It's released under version 2.0 of the [Apache License](https://www.apache.org/licenses/LICENSE-2.0).
