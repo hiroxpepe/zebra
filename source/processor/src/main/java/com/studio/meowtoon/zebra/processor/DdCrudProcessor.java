@@ -16,24 +16,13 @@
 
 package com.studio.meowtoon.zebra.processor;
 
-import java.util.List;
-
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  * @author h.adachi
  */
 public class DdCrudProcessor implements Processor {
-
-    ///////////////////////////////////////////////////////////////////////////
-    // protected Field
-
-    protected static final Log LOG = LogFactory.getLog(DdCrudProcessor.class
-    );
 
     ///////////////////////////////////////////////////////////////////////////
     // Constructor
