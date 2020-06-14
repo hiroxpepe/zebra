@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://camel.apache.org/schema/spring
+        http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+    <bean id="loggingEventNotifer" class="com.studio.meowtoon.zebra.processor.LoggingEventNotifer" />
+    <!-- convert the http stream of the XML to string. -->
+    <bean id="httpStreamToBodyProcessor" class="com.studio.meowtoon.zebra.processor.HttpStreamToBodyProcessor">
+        <constructor-arg name="encode" value="UTF-8" />
+    </bean>
+    <!-- parse the RSS to the csv file. -->
+    <bean id="rssParserProcessor" class="com.studio.meowtoon.zebra.processor.custom.JmaRssParserProcessor" />
+    <!-- insert or update to RDB -->
+    <bean id="csvDbCrudProcessor" class="com.studio.meowtoon.zebra.processor.custom.JmaCsvDdCrudProcessor" />
+
+    <camelContext xmlns="http://camel.apache.org/schema/spring">
+
+        <!-- regular_l.xml -->
+        <route id="input-jmaxml-l-route1">
+            <from uri="quartz2://jmaxml-l-http-get1?cron=5+05+10+*+*+?" />
+            <setHeader headerName="CamelHttpMethod">
+                <constant>GET</constant>
+            </setHeader>
+            <to uri="http://www.data.jma.go.jp/developer/xml/feed/regular_l.xml" />
+            <to uri="bean:httpStreamToBodyProcessor" />
+            <to uri="bean:rssParserProcessor" />
+            <to uri="bean:csvDbCrudProcessor" />
+            <to uri="file://../../var/www/html/zebra/src/jmaxml?charset=UTF-8&amp;fileName=jmaxml-regular_l.csv" />
+            <to uri="file://../../var/www/html/zebra/src/jmaxml/history?charset=UTF-8&amp;fileName=${date:now:yyyyMMddHHmmssSSS}-jmaxml-regular_l.csv" />
+            <onException>
+                <exception>java.lang.Exception</exception>
+                <redeliveryPolicy maximumRedeliveries="3" redeliveryDelay="3000" />
+            </onException>
+        </route>
+
+        <!-- extra_l.xml -->
+        <route id="input-jmaxml-l-route2">
+            <from uri="quartz2://jmaxml-l-http-get2?cron=5+15+10+*+*+?" />
+            <setHeader headerName="CamelHttpMethod">
+                <constant>GET</constant>
+            </setHeader>
+            <to uri="http://www.data.jma.go.jp/developer/xml/feed/extra_l.xml" />
+            <to uri="bean:httpStreamToBodyProcessor" />
+            <to uri="bean:rssParserProcessor" />
+            <to uri="bean:csvDbCrudProcessor" />
+            <to uri="file://../../var/www/html/zebra/src/jmaxml?charset=UTF-8&amp;fileName=jmaxml-extra_l.csv" />
+            <to uri="file://../../var/www/html/zebra/src/jmaxml/history?charset=UTF-8&amp;fileName=${date:now:yyyyMMddHHmmssSSS}-jmaxml-extra_l.csv" />
+            <onException>
+                <exception>java.lang.Exception</exception>
+                <redeliveryPolicy maximumRedeliveries="3" redeliveryDelay="3000" />
+            </onException>
+        </route>
+
+        <!-- eqvol_l.xml -->
+        <route id="input-jmaxml-l-route3">
+            <from uri="quartz2://jmaxml-l-http-get3?cron=5+25+10+*+*+?" />
+            <setHeader headerName="CamelHttpMethod">
+                <constant>GET</constant>
+            </setHeader>
+            <to uri="http://www.data.jma.go.jp/developer/xml/feed/eqvol_l.xml" />
+            <to uri="bean:httpStreamToBodyProcessor" />
+            <to uri="bean:rssParserProcessor" />
+            <to uri="bean:csvDbCrudProcessor" />
+            <to uri="file://../../var/www/html/zebra/src/jmaxml?charset=UTF-8&amp;fileName=jmaxml-eqvol_l.csv" />
+            <to uri="file://../../var/www/html/zebra/src/jmaxml/history?charset=UTF-8&amp;fileName=${date:now:yyyyMMddHHmmssSSS}-jmaxml-eqvol_l.csv" />
+            <onException>
+                <exception>java.lang.Exception</exception>
+                <redeliveryPolicy maximumRedeliveries="3" redeliveryDelay="3000" />
+            </onException>
+        </route>
+
+        <!-- other_l.xml -->
+        <route id="input-jmaxml-l-route4">
+            <from uri="quartz2://jmaxml-l-http-get4?cron=5+30+10+*+*+?" />
+            <setHeader headerName="CamelHttpMethod">
+                <constant>GET</constant>
+            </setHeader>
+            <to uri="http://www.data.jma.go.jp/developer/xml/feed/other_l.xml" />
+            <to uri="bean:httpStreamToBodyProcessor" />
+            <to uri="bean:rssParserProcessor" />
+            <to uri="bean:csvDbCrudProcessor" />
+            <to uri="file://../../var/www/html/zebra/src/jmaxml?charset=UTF-8&amp;fileName=jmaxml-other_l.csv" />
+            <to uri="file://../../var/www/html/zebra/src/jmaxml/history?charset=UTF-8&amp;fileName=${date:now:yyyyMMddHHmmssSSS}-jmaxml-other_l.csv" />
+            <onException>
+                <exception>java.lang.Exception</exception>
+                <redeliveryPolicy maximumRedeliveries="3" redeliveryDelay="3000" />
+            </onException>
+        </route>
+
+    </camelContext>
+
+</beans>
