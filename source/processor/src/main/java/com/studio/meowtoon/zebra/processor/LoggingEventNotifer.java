@@ -19,6 +19,7 @@ package com.studio.meowtoon.zebra.processor;
 import java.util.Date;
 import java.util.EventObject;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Endpoint;
 import org.apache.camel.Exchange;
 import org.apache.camel.management.event.ExchangeCompletedEvent;
@@ -27,23 +28,14 @@ import org.apache.camel.management.event.ExchangeFailedEvent;
 import org.apache.camel.management.event.ExchangeRedeliveryEvent;
 import org.apache.camel.management.event.ExchangeSentEvent;
 import org.apache.camel.support.EventNotifierSupport;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  * @author h.adachi
  */
+@Slf4j
 public class LoggingEventNotifer extends EventNotifierSupport {
 
     // TODO: from の処理では、ここはまだ呼ばれていないのでは？
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Field
-
-    private static final Log LOG = LogFactory.getLog(
-        LoggingEventNotifer.class
-    );
 
     ///////////////////////////////////////////////////////////////////////////
     // public Method
@@ -83,7 +75,7 @@ public class LoggingEventNotifer extends EventNotifierSupport {
         String routeId = exchange.getFromRouteId();
         Object source =  failedEvent.getSource();
 
-        LOG.warn(">>> [" + routeId + ":" + exchangeId + "] Failed:" + source.toString());
+        log.warn(">>> [" + routeId + ":" + exchangeId + "] Failed:" + source.toString());
     }
 
     // on ExchangeRedeliveryEvent
@@ -94,7 +86,7 @@ public class LoggingEventNotifer extends EventNotifierSupport {
         String routeId = exchange.getFromRouteId();
         int attempt = redeliveryEvent.getAttempt();
 
-        LOG.warn(">>> [" + routeId + ":" + exchangeId + "] Redelivery: " + attempt);
+        log.warn(">>> [" + routeId + ":" + exchangeId + "] Redelivery: " + attempt);
     }
 
     // on ExchangeCompletedEvent
@@ -109,7 +101,7 @@ public class LoggingEventNotifer extends EventNotifierSupport {
         Date now = new Date();
         long elapsed = now.getTime() - created.getTime();
 
-        LOG.info(">>> [" + routeId + ":" + exchangeId + "] End: " + elapsed + " msec for the exchange");
+        log.info(">>> [" + routeId + ":" + exchangeId + "] End: " + elapsed + " msec for the exchange");
     }
 
     // on ExchangeSentEvent
@@ -121,7 +113,7 @@ public class LoggingEventNotifer extends EventNotifierSupport {
         Endpoint endpoint = sentEvent.getEndpoint();
         String EndpointUri = endpoint.getEndpointUri();
 
-        LOG.info(">>> [" + routeId + ":" + exchangeId + "] To: " + sentEvent.getTimeTaken() + " msec to: " + EndpointUri);
+        log.info(">>> [" + routeId + ":" + exchangeId + "] To: " + sentEvent.getTimeTaken() + " msec to: " + EndpointUri);
     }
 
     // on ExchangeCreatedEvent
@@ -131,11 +123,11 @@ public class LoggingEventNotifer extends EventNotifierSupport {
         String exchangeId = exchange.getExchangeId();
         String routeId = exchange.getFromRouteId();
 
-        LOG.info(">>> [" + routeId + ":" + exchangeId + "] Exchange start ");
+        log.info(">>> [" + routeId + ":" + exchangeId + "] Exchange start ");
 
         Endpoint endpoint = exchange.getFromEndpoint();
         String EndpointUri = endpoint.getEndpointUri();
-        LOG.info(">>> [" + routeId + ":" + exchangeId + "] From: " + EndpointUri);
+        log.info(">>> [" + routeId + ":" + exchangeId + "] From: " + EndpointUri);
     }
 
     @Override

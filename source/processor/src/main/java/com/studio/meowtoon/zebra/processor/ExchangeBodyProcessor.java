@@ -20,27 +20,18 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Endpoint;
-
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  * @author h.adachi
  */
+@Slf4j
 public class ExchangeBodyProcessor implements Processor {
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Field
-
-    private static final Log LOG = LogFactory.getLog(
-        ExchangeBodyProcessor.class
-    );
 
     ///////////////////////////////////////////////////////////////////////////
     // public Method
@@ -62,8 +53,7 @@ public class ExchangeBodyProcessor implements Processor {
     // private Method
 
     private String getFromText(String filePath) throws IOException, IllegalArgumentException {
-        FileInputStream stream = null;
-        stream = new FileInputStream(new File(filePath));
+        FileInputStream stream = new FileInputStream(new File(filePath));
         return IOUtils.toString(stream);
     }
 

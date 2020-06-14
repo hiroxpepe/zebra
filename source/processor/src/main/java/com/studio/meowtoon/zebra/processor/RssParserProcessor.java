@@ -25,27 +25,21 @@ import com.rometools.rome.feed.synd.SyndFeed;
 import com.rometools.rome.io.FeedException;
 import com.rometools.rome.io.SyndFeedInput;
 import com.rometools.rome.io.XmlReader;
-
+import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  * simply create text contents from the item list of RSS.
  * @author h.adachi
  */
+@Slf4j
 public class RssParserProcessor implements Processor {
 
     ///////////////////////////////////////////////////////////////////////////
     // protected Field
-
-    protected static final Log LOG = LogFactory.getLog(
-        RssParserProcessor.class
-    );
 
     protected String contentFormat = "【${title}】　\r\n\r\n${items}";
 
