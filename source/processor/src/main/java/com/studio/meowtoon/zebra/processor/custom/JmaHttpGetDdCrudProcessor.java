@@ -20,8 +20,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-import javax.inject.Inject;
 
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpConnectionManager;
 import org.apache.commons.httpclient.HttpException;
@@ -39,18 +40,17 @@ import org.springframework.transaction.annotation.Transactional;
 import com.studio.meowtoon.zebra.processor.DdCrudProcessor;
 import com.studio.meowtoon.zebra.jma.entity.Entry;
 import com.studio.meowtoon.zebra.jma.repository.EntryRepository;
-import com.studio.meowtoon.zebra.jma.repository.TypeRepository;
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  * @author h.adachi
  */
+@RequiredArgsConstructor
 public class JmaHttpGetDdCrudProcessor extends DdCrudProcessor {
 
     ///////////////////////////////////////////////////////////////////////////
     // Field
 
-    private static String BASE_DIR = "../../var/www/html/zebra/data/"; // FIXME: 設定化
+    private static final String BASE_DIR = "../../var/www/html/zebra/data/"; // FIXME: 設定化
 
     // コネクションタイムアウトmsec
     private final int connectionTimeout = 3000;
@@ -62,17 +62,11 @@ public class JmaHttpGetDdCrudProcessor extends DdCrudProcessor {
 
     private final int maxTotalConnections = 256;
 
-    @Inject
-    private final ApplicationContext context = null;
+    @NonNull
+    private final ApplicationContext context;
 
-    @Inject
-    private final EntryRepository entryRepository = null;
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Constructor
-
-    public JmaHttpGetDdCrudProcessor() {
-    }
+    @NonNull
+    private final EntryRepository entryRepository;
 
     ///////////////////////////////////////////////////////////////////////////
     // protected Method

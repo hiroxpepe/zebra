@@ -21,8 +21,9 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import javax.inject.Inject;
 
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,29 +33,23 @@ import com.studio.meowtoon.zebra.jma.entity.Type;
 import com.studio.meowtoon.zebra.jma.repository.EntryRepository;
 import com.studio.meowtoon.zebra.jma.repository.TypeRepository;
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  * @author h.adachi
  */
+@RequiredArgsConstructor
 public class JmaCsvDdCrudProcessor extends DdCrudProcessor {
 
     ///////////////////////////////////////////////////////////////////////////
     // Field
 
-    @Inject
-    private final ApplicationContext context = null;
+    @NonNull
+    private final ApplicationContext context;
 
-    @Inject
-    private final EntryRepository entryRepository = null;
+    @NonNull
+    private final EntryRepository entryRepository;
 
-    @Inject
-    private final TypeRepository typeRepository = null;
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Constructor
-
-    public JmaCsvDdCrudProcessor() {
-    }
+    @NonNull
+    private final TypeRepository typeRepository;
 
     ///////////////////////////////////////////////////////////////////////////
     // protected Method

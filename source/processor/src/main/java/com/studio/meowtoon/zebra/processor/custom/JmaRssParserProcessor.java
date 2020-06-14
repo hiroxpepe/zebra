@@ -17,20 +17,21 @@
 package com.studio.meowtoon.zebra.processor.custom;
 
 import java.util.List;
-import javax.inject.Inject;
 
 import com.rometools.rome.feed.synd.SyndEntry;
 import com.rometools.rome.feed.synd.SyndFeed;
-import com.studio.meowtoon.zebra.jma.entity.Type;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
+import com.studio.meowtoon.zebra.jma.entity.Type;
 import com.studio.meowtoon.zebra.jma.repository.TypeRepository;
 import com.studio.meowtoon.zebra.processor.RssParserProcessor;
 import com.studio.meowtoon.zebra.util.CommonUtils;
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  * @author h.adachi
  */
+@RequiredArgsConstructor
 public class JmaRssParserProcessor extends RssParserProcessor {
 
     /*
@@ -47,8 +48,8 @@ public class JmaRssParserProcessor extends RssParserProcessor {
     ///////////////////////////////////////////////////////////////////////////
     // Field
 
-    @Inject
-    private final TypeRepository typeRepository = null;
+    @NonNull
+    private final TypeRepository typeRepository;
 
     ///////////////////////////////////////////////////////////////////////////
     // protected Method
