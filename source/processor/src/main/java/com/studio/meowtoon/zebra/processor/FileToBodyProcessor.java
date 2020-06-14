@@ -40,7 +40,7 @@ public class FileToBodyProcessor implements Processor {
         FileToBodyProcessor.class
     );
 
-    private String encode; // Default: Shift_JIS
+    private final String encode; // Default: Shift_JIS
 
     ///////////////////////////////////////////////////////////////////////////
     // Constructor
