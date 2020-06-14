@@ -20,3 +20,5 @@ DOCUMENT_J.md
 *.log
 *.txt
 /var/www/html/zebra/
+
+!LICENSE.txt
