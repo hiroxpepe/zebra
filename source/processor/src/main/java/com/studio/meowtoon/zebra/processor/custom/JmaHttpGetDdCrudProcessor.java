@@ -35,7 +35,7 @@ import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.time.StopWatch;
-import org.springframework.context.ApplicationContext;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.studio.meowtoon.zebra.processor.DdCrudProcessor;
@@ -52,20 +52,20 @@ public class JmaHttpGetDdCrudProcessor extends DdCrudProcessor {
     ///////////////////////////////////////////////////////////////////////////
     // Field
 
-    private static final String BASE_DIR = "../../var/www/html/zebra/data/"; // FIXME: 設定化
+    @Value("${output.data.dir}")
+    private String outputDataDir; // not final.
 
-    // コネクションタイムアウトmsec
-    private final int connectionTimeout = 3000;
+    @Value("${connection.timeout}")
+    private int connectionTimeout; // not final.
 
-    // ソケットタイムアウトmsec
-    private final int socketTimeout = 3000;
+    @Value("${socket.timeout}")
+    private int socketTimeout; // not final.
 
-    private final int defaultMaxConnectionsPerHost = 64;
+    @Value("${default.max.connections.per.host}")
+    private int defaultMaxConnectionsPerHost; // not final.
 
-    private final int maxTotalConnections = 256;
-
-    @NonNull
-    private final ApplicationContext context;
+    @Value("${max.total.connections}")
+    private int maxTotalConnections; // not final.
 
     @NonNull
     private final EntryRepository entryRepository;
@@ -87,7 +87,7 @@ public class JmaHttpGetDdCrudProcessor extends DdCrudProcessor {
                 entry.setBody(entry.getUuid() + ".xml");
                 entryRepository.save(entry);
                 // ファイルとして出力する
-                FileUtils.writeStringToFile( new File(BASE_DIR + entry.getUuid() + ".xml"), xml, "UTF-8" );
+                FileUtils.writeStringToFile(new File(outputDataDir + entry.getUuid() + ".xml"), xml, "UTF-8" );
             }
 
         } catch (IOException ex) {
