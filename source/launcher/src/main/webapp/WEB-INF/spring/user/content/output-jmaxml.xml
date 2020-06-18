@@ -9,11 +9,4 @@
         http://camel.apache.org/schema/spring
         http://camel.apache.org/schema/spring/camel-spring.xsd">
 
-    <camelContext xmlns="http://camel.apache.org/schema/spring">
-        <route id="output-jmaxml-route1">
-            <from uri="file:///home/src/hoge?fileName=hoge.txt" />
-            <to uri="file:///home/dst/hoge?fileName=${file:onlyname}" />
-        </route>
-    </camelContext>
-
 </beans>

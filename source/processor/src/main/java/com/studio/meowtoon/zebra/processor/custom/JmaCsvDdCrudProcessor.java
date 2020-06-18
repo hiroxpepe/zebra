@@ -21,8 +21,10 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import javax.inject.Inject;
 
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,29 +34,24 @@ import com.studio.meowtoon.zebra.jma.entity.Type;
 import com.studio.meowtoon.zebra.jma.repository.EntryRepository;
 import com.studio.meowtoon.zebra.jma.repository.TypeRepository;
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  * @author h.adachi
  */
+@Slf4j
+@RequiredArgsConstructor
 public class JmaCsvDdCrudProcessor extends DdCrudProcessor {
 
     ///////////////////////////////////////////////////////////////////////////
     // Field
 
-    @Inject
-    private final ApplicationContext context = null;
+    @NonNull
+    private final ApplicationContext context;
 
-    @Inject
-    private final EntryRepository entryRepository = null;
+    @NonNull
+    private final EntryRepository entryRepository;
 
-    @Inject
-    private final TypeRepository typeRepository = null;
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Constructor
-
-    public JmaCsvDdCrudProcessor() {
-    }
+    @NonNull
+    private final TypeRepository typeRepository;
 
     ///////////////////////////////////////////////////////////////////////////
     // protected Method
@@ -66,7 +63,7 @@ public class JmaCsvDdCrudProcessor extends DdCrudProcessor {
         try {
             // CSVの一行リスト
             List<String> lineList = Arrays.asList(csvData.split("\r\n"));
-            LOG.info("CSVの行数: " + lineList.size());
+            log.info("CSVの行数: " + lineList.size());
             if (lineList.get(0).equals("")) {
                 return;
             }
@@ -75,7 +72,7 @@ public class JmaCsvDdCrudProcessor extends DdCrudProcessor {
                 // マスタタイプ(情報種別)の収集
                 List<Type> existingTypes = typeRepository.findByTitle(field[1]);
                 if (existingTypes.isEmpty()) { // なければ新規追加
-                    LOG.info("情報種別:" + field[1] + " を新規追加します。");
+                    log.info("情報種別:" + field[1] + " を新規追加します。");
                     Type type = context.getBean(Type.class);
                     type.setTitle(field[1]);
                     type.setUpdated(sdf.parse(field[3]));
@@ -83,7 +80,7 @@ public class JmaCsvDdCrudProcessor extends DdCrudProcessor {
                 } else { // 情報種別が存在し、更新時刻が新しければ上書き
                     Type target = existingTypes.get(0);
                     if (target.getUpdated().compareTo(sdf.parse(field[3])) == -1) {
-                        LOG.info("情報種別:" + field[1] + " の更新時刻を更新します。");
+                        log.info("情報種別:" + field[1] + " の更新時刻を更新します。");
                         target.setUpdated(sdf.parse(field[3]));
                         typeRepository.save(target);
                     }
@@ -92,7 +89,7 @@ public class JmaCsvDdCrudProcessor extends DdCrudProcessor {
                 // レコードテーブルに取り込み
                 List<Entry> existingUuids = entryRepository.findByUuid(field[2]);
                 if (existingUuids.isEmpty()) { // UUIDの確認、なければ新規追加
-                    LOG.info(field[1] + " を新規追加します。");
+                    log.info(field[1] + " を新規追加します。");
                     Entry entry = context.getBean(Entry.class);
                     entry.setTitle(field[1]);
                     entry.setUuid(field[2]);
@@ -105,7 +102,7 @@ public class JmaCsvDdCrudProcessor extends DdCrudProcessor {
                     Entry target = existingUuids.get(0);
                     // 更新時刻が違えば更新する
                     if (target.getUpdated().compareTo(sdf.parse(field[3])) != 0) {
-                        LOG.info(field[1] + " を更新します。");
+                        log.info(field[1] + " を更新します。");
                         target.setTitle(field[1]);
                         target.setUpdated(sdf.parse(field[3]));
                         target.setAuthor(field[4]);
@@ -118,7 +115,7 @@ public class JmaCsvDdCrudProcessor extends DdCrudProcessor {
             }
         } catch (ParseException ex) {
             // FIXME:
-            LOG.error(ex.getMessage());
+            log.error(ex.getMessage());
         }
     }
 

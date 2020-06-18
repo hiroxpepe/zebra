@@ -17,20 +17,23 @@
 package com.studio.meowtoon.zebra.processor.custom;
 
 import java.util.List;
-import javax.inject.Inject;
 
 import com.rometools.rome.feed.synd.SyndEntry;
 import com.rometools.rome.feed.synd.SyndFeed;
-import com.studio.meowtoon.zebra.jma.entity.Type;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+import com.studio.meowtoon.zebra.jma.entity.Type;
 import com.studio.meowtoon.zebra.jma.repository.TypeRepository;
 import com.studio.meowtoon.zebra.processor.RssParserProcessor;
 import com.studio.meowtoon.zebra.util.CommonUtils;
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  * @author h.adachi
  */
+@Slf4j
+@RequiredArgsConstructor
 public class JmaRssParserProcessor extends RssParserProcessor {
 
     /*
@@ -47,8 +50,8 @@ public class JmaRssParserProcessor extends RssParserProcessor {
     ///////////////////////////////////////////////////////////////////////////
     // Field
 
-    @Inject
-    private final TypeRepository typeRepository = null;
+    @NonNull
+    private final TypeRepository typeRepository;
 
     ///////////////////////////////////////////////////////////////////////////
     // protected Method
@@ -67,7 +70,7 @@ public class JmaRssParserProcessor extends RssParserProcessor {
             boolean need = true;
             for (Type type : unuseTypes) { // 必要のない情報種別は除外する
                 if (type.getTitle().equals(entry.getTitle())) {
-                    LOG.info(entry.getTitle() + " は必要ない情報種別です。");
+                    log.info(entry.getTitle() + " は必要ない情報種別です。");
                     need = false;
                     break;
                 }

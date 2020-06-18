@@ -18,25 +18,20 @@ package com.studio.meowtoon.zebra.processor;
 
 import java.io.InputStream;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.apache.camel.Processor;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  * @author h.adachi
  */
+@Slf4j
 public class HttpStreamToBodyProcessor implements Processor {
 
     ///////////////////////////////////////////////////////////////////////////
     // Field
-
-    private static final Log LOG = LogFactory.getLog(
-        HttpStreamToBodyProcessor.class
-    );
 
     private final String encode; // Default: Shift_JIS
 

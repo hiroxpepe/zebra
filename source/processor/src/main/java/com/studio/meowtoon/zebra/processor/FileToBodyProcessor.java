@@ -19,28 +19,23 @@ package com.studio.meowtoon.zebra.processor;
 import java.io.File;
 import java.io.IOException;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Endpoint;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  * @author h.adachi
  */
+@Slf4j
 public class FileToBodyProcessor implements Processor {
 
     ///////////////////////////////////////////////////////////////////////////
     // Field
 
-    private static final Log LOG = LogFactory.getLog(
-        FileToBodyProcessor.class
-    );
-
-    private String encode; // Default: Shift_JIS
+    private final String encode; // Default: Shift_JIS
 
     ///////////////////////////////////////////////////////////////////////////
     // Constructor
@@ -59,10 +54,10 @@ public class FileToBodyProcessor implements Processor {
     public void process(Exchange exchange) throws Exception {
         try {
             String filePath = getFilePath(exchange);
-            LOG.debug("filePath: " + filePath);
+            log.debug("filePath: " + filePath);
 
             String fromText = getFromText(filePath);
-            LOG.debug("fromText: " + fromText);
+            log.debug("fromText: " + fromText);
 
             // exchange the body text.
             exchange.getIn().setBody(fromText);

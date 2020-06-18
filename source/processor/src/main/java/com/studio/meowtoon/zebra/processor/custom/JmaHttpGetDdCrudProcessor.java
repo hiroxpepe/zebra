@@ -20,8 +20,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-import javax.inject.Inject;
 
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpConnectionManager;
 import org.apache.commons.httpclient.HttpException;
@@ -33,46 +35,40 @@ import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.time.StopWatch;
-import org.springframework.context.ApplicationContext;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.studio.meowtoon.zebra.processor.DdCrudProcessor;
 import com.studio.meowtoon.zebra.jma.entity.Entry;
 import com.studio.meowtoon.zebra.jma.repository.EntryRepository;
-import com.studio.meowtoon.zebra.jma.repository.TypeRepository;
 
-///////////////////////////////////////////////////////////////////////////////
 /**
  * @author h.adachi
  */
+@Slf4j
+@RequiredArgsConstructor
 public class JmaHttpGetDdCrudProcessor extends DdCrudProcessor {
 
     ///////////////////////////////////////////////////////////////////////////
     // Field
 
-    private static String BASE_DIR = "../../var/www/html/zebra/data/"; // FIXME: 設定化
+    @Value("${output.data.dir}")
+    private String outputDataDir; // not final.
 
-    // コネクションタイムアウトmsec
-    private final int connectionTimeout = 3000;
+    @Value("${connection.timeout}")
+    private int connectionTimeout; // not final.
 
-    // ソケットタイムアウトmsec
-    private final int socketTimeout = 3000;
+    @Value("${socket.timeout}")
+    private int socketTimeout; // not final.
 
-    private final int defaultMaxConnectionsPerHost = 64;
+    @Value("${default.max.connections.per.host}")
+    private int defaultMaxConnectionsPerHost; // not final.
 
-    private final int maxTotalConnections = 256;
+    @Value("${max.total.connections}")
+    private int maxTotalConnections; // not final.
 
-    @Inject
-    private final ApplicationContext context = null;
-
-    @Inject
-    private final EntryRepository entryRepository = null;
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Constructor
-
-    public JmaHttpGetDdCrudProcessor() {
-    }
+    @NonNull
+    private final EntryRepository entryRepository;
 
     ///////////////////////////////////////////////////////////////////////////
     // protected Method
@@ -84,19 +80,19 @@ public class JmaHttpGetDdCrudProcessor extends DdCrudProcessor {
             // DBに登録されたレコードでXMLの内容の値が空のレコードを抽出。
             // URL先のxmlをダウンロード、ファイル出力する。
             List<Entry> list = entryRepository.findByBodyIsNull();
-            LOG.info("XMLの内容がnullのレコード数: " + list.size());
+            log.info("XMLの内容がnullのレコード数: " + list.size());
             for (Entry entry : list) {
                 String url = entry.getUrl();
                 String xml = request(url);
                 entry.setBody(entry.getUuid() + ".xml");
                 entryRepository.save(entry);
                 // ファイルとして出力する
-                FileUtils.writeStringToFile( new File(BASE_DIR + entry.getUuid() + ".xml"), xml, "UTF-8" );
+                FileUtils.writeStringToFile(new File(outputDataDir + entry.getUuid() + ".xml"), xml, "UTF-8" );
             }
 
         } catch (IOException ex) {
             // FIXME:
-            LOG.error(ex.getMessage());
+            log.error(ex.getMessage());
         }
     }
 
@@ -105,8 +101,6 @@ public class JmaHttpGetDdCrudProcessor extends DdCrudProcessor {
 
     // HTTPリクエスト処理
     private String request(final String url) {
-        LOG.trace("was called.");
-
         HttpMethod method = null;
         try {
             // パラメータ設定
@@ -123,7 +117,7 @@ public class JmaHttpGetDdCrudProcessor extends DdCrudProcessor {
             method = new GetMethod(url);
 
             // リクエストレスポンス計測
-            LOG.info("HTTPリクエスト開始: " + method.getURI().toString());
+            log.info("HTTPリクエスト開始: " + method.getURI().toString());
             StopWatch stopWatch = new StopWatch();
             stopWatch.start();
 
@@ -131,30 +125,32 @@ public class JmaHttpGetDdCrudProcessor extends DdCrudProcessor {
             client.executeMethod(method);
             if (method.getStatusCode() == HttpStatus.SC_OK) {
                 stopWatch.stop();
-                LOG.info("レスポンス時間: " + stopWatch.getTime() + " msec");
-                LOG.info("HTTPリクエストの結果: " + method.getStatusCode());
+                log.info("レスポンス時間: " + stopWatch.getTime() + " msec");
+                log.info("HTTPリクエストの結果: " + method.getStatusCode());
                 // ストリーム取得
                 InputStream is = method.getResponseBodyAsStream();
                 String responseBody = IOUtils.toString(is, "UTF-8");
-                LOG.info("responseBodyのサイズ: " + responseBody.length());
+                log.info("responseBodyのサイズ: " + responseBody.length());
                 return responseBody;
             }
             // HTTP の 200 以外が返された場合はエラーフラグを付ける為、例外を投げる
             else {
-                LOG.error(
+                log.error(
                     "error: HTTP request failed. [" +
                     String.valueOf(method.getStatusCode()) + "]"
                 );
                 throw new RuntimeException("HTTP request failed.");
             }
         } catch (HttpException he) {
-            LOG.error("error: " + he.getMessage());
+            log.error("error: " + he.getMessage());
             throw new RuntimeException("HttpException happened.", he);
         } catch (IOException ioe) {
-            LOG.error("error: " + ioe.getMessage());
+            log.error("error: " + ioe.getMessage());
             throw new RuntimeException("IOException happened.", ioe);
         } finally {
-            method.releaseConnection();
+            if (method != null) {
+                method.releaseConnection();
+            }
         }
     }
 

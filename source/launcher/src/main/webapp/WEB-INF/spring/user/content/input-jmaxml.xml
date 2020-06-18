@@ -22,6 +22,7 @@
     <bean id="httpGetDbCrudProcessor" class="com.studio.meowtoon.zebra.processor.custom.JmaHttpGetDdCrudProcessor" />
 
     <camelContext xmlns="http://camel.apache.org/schema/spring">
+        <propertyPlaceholder id="properties" location="app.properties"/>
 
         <!-- regular.xml -->
         <route id="input-jmaxml-route1">
@@ -34,8 +35,8 @@
             <to uri="bean:rssParserProcessor" />
             <to uri="bean:csvDbCrudProcessor" />
             <to uri="bean:httpGetDbCrudProcessor" />
-            <to uri="file://../../var/www/html/zebra/src/jmaxml?charset=UTF-8&amp;fileName=jmaxml-regular.csv" />
-            <to uri="file://../../var/www/html/zebra/src/jmaxml/history?charset=UTF-8&amp;fileName=${date:now:yyyyMMddHHmmssSSS}-jmaxml-regular.csv" />
+            <to uri="file://{{output.src.dir}}jmaxml?charset=UTF-8&amp;fileName=jmaxml-regular.csv" />
+            <to uri="file://{{output.src.dir}}jmaxml/history?charset=UTF-8&amp;fileName=${date:now:yyyyMMddHHmmssSSS}-jmaxml-regular.csv" />
             <onException>
                 <exception>java.lang.Exception</exception>
                 <redeliveryPolicy maximumRedeliveries="3" redeliveryDelay="3000" />
@@ -53,8 +54,8 @@
             <to uri="bean:rssParserProcessor" />
             <to uri="bean:csvDbCrudProcessor" />
             <to uri="bean:httpGetDbCrudProcessor" />
-            <to uri="file://../../var/www/html/zebra/src/jmaxml?charset=UTF-8&amp;fileName=jmaxml-extra.csv" />
-            <to uri="file://../../var/www/html/zebra/src/jmaxml/history?charset=UTF-8&amp;fileName=${date:now:yyyyMMddHHmmssSSS}-jmaxml-extra.csv" />
+            <to uri="file://{{output.src.dir}}jmaxml?charset=UTF-8&amp;fileName=jmaxml-extra.csv" />
+            <to uri="file://{{output.src.dir}}jmaxml/history?charset=UTF-8&amp;fileName=${date:now:yyyyMMddHHmmssSSS}-jmaxml-extra.csv" />
             <onException>
                 <exception>java.lang.Exception</exception>
                 <redeliveryPolicy maximumRedeliveries="3" redeliveryDelay="3000" />
@@ -72,8 +73,8 @@
             <to uri="bean:rssParserProcessor" />
             <to uri="bean:csvDbCrudProcessor" />
             <to uri="bean:httpGetDbCrudProcessor" />
-            <to uri="file://../../var/www/html/zebra/src/jmaxml?charset=UTF-8&amp;fileName=jmaxml-eqvol.csv" />
-            <to uri="file://../../var/www/html/zebra/src/jmaxml/history?charset=UTF-8&amp;fileName=${date:now:yyyyMMddHHmmssSSS}-jmaxml-eqvol.csv" />
+            <to uri="file://{{output.src.dir}}jmaxml?charset=UTF-8&amp;fileName=jmaxml-eqvol.csv" />
+            <to uri="file://{{output.src.dir}}jmaxml/history?charset=UTF-8&amp;fileName=${date:now:yyyyMMddHHmmssSSS}-jmaxml-eqvol.csv" />
             <onException>
                 <exception>java.lang.Exception</exception>
                 <redeliveryPolicy maximumRedeliveries="3" redeliveryDelay="3000" />
@@ -91,8 +92,8 @@
             <to uri="bean:rssParserProcessor" />
             <to uri="bean:csvDbCrudProcessor" />
             <to uri="bean:httpGetDbCrudProcessor" />
-            <to uri="file://../../var/www/html/zebra/src/jmaxml?charset=UTF-8&amp;fileName=jmaxml-other.csv" />
-            <to uri="file://../../var/www/html/zebra/src/jmaxml/history?charset=UTF-8&amp;fileName=${date:now:yyyyMMddHHmmssSSS}-jmaxml-other.csv" />
+            <to uri="file://{{output.src.dir}}jmaxml?charset=UTF-8&amp;fileName=jmaxml-other.csv" />
+            <to uri="file://{{output.src.dir}}jmaxml/history?charset=UTF-8&amp;fileName=${date:now:yyyyMMddHHmmssSSS}-jmaxml-other.csv" />
             <onException>
                 <exception>java.lang.Exception</exception>
                 <redeliveryPolicy maximumRedeliveries="3" redeliveryDelay="3000" />
